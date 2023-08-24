@@ -6,10 +6,85 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>heyyyy</h1>
+    <section class="wrapper">
+        <h1>Weather</h1>
 
-    <input class="city" type="text" placeholder="city">
-    <button class="btn"> find</button>
+        <div class="tabs">
+            <p class="tab" user-tab>Current weather</p>
+            <p class="tab" search-tab>Search Weather</p>
+        </div>
+
+
+        <!--common container-->
+        <div class="infocontainer">
+            <!--grant location-->
+            <div class="grant-container">
+                <img src="./images/location.png" width="80" loading="lazy" alt="" >
+
+                <p>Grant Location Access</p>
+
+                <p>Allow Access to get weather Information</p>
+
+                <button class="btn" data-access>Grant Access</button>
+
+            </div>
+
+            <!--search-->
+            <form action="" class="form-container" data-search>
+                <input type="text" placeholder="Search for City...." data-input>
+                <button>
+                    <img src="./images/search.png" alt="search">
+                </button>
+
+            </form>
+
+            <!--loading-->
+            <div class="loading">
+                <img src="./images/loading.gif" height="150" alt="">
+            </div>
+
+
+            <!--info display-->
+            <div class="display-output" display-output>
+                <div class="name">
+                    <p id="city-name"></p>
+                    <img src="" id="flag" alt="">
+                </div>
+    
+                <p class="weather-status"></p>
+    
+                <img weather-img>
+    
+                <p temp-output></p>
+    
+                <div class="parameter-container" >
+                    <!--card1-->
+                    <div class="parameter">
+                        <img src="./images/wind.png" alt="windy">
+                        <p>windspeed</p>
+                        <p wind-output></p>
+                    </div>
+    
+                    <!--card2-->
+                    <div class="parameter">
+                        <img src="./images/humidity.png" alt="humidity">
+                        <p>Humidity</p>
+                        <p humidity-output></p>
+                    </div>
+    
+                    <!--card3-->
+                    <div class="parameter">
+                        <img src="./images/cloud.png" alt="cloud">
+                        <p>Clouds</p>
+                        <p clouds-output></p>
+                    </div>
+    
+                </div>
+            </div>
+
+        </div>
+    </section>
+
 
 
     <script src="index.js"></script>
