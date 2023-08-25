@@ -36,7 +36,61 @@
 
 const userTab = document.querySelector("[user-tab]");
 const searchTab = document.querySelector("[search-tab]");
-const usercontainer = document.querySelector(".infocontainer");
+const grantContainer = document.querySelector("grant-container");
 const searchForm = document.querySelector("[data-search]");
 const loadingScreen = document.querySelector(".loading")
-const userInfo = document.querySelector("[display-output]");
+const outputInfo = document.querySelector("[display-output]");
+let currentTab = userTab;
+const API_key = "8214cae20a86d1c6e5ab0d1d45570f9d";
+currentTab.classList.add("current")
+
+function switchh(newTab){
+    if(newTab!= currentTab){
+        currentTab.classList.remove("current");
+        currentTab = newTab;
+        currentTab.classList.add("current");
+
+        if(!searchForm.classList.contains("active")){
+            grantContainer.classList.remove("active");
+            outputInfo.classList.remove("active");
+            searchForm.classList.add("activel");
+        }
+
+        //your weather
+        else{
+            //make your weather visible
+            searchForm.classList.remove("active");
+            outputInfo.classList.remove("active");
+            getfromSessionStorage();
+        }
+    }
+
+}
+
+userTab.addEventListener("click", () => {
+    switchh(userTab);
+})
+
+searchTab.addEventListener("click", () => {
+    switchh(searchTab);
+})
+
+
+//check for the coordintes
+function getfromSessionStorage(){
+    const localCordinates = sessionStorage.getItem("coordinates");
+
+    //if coordinates not present
+    if(!localCordinates){
+        grantContainer.classList.add("active");
+    }
+
+    else{
+        const coordinates = JSON.parse(localCordinates);
+        fetchWeather(coordinates);
+    }
+}
+
+async function fetchWeather(coordinates){
+
+}
