@@ -92,5 +92,43 @@ function getfromSessionStorage(){
 }
 
 async function fetchWeather(coordinates){
+    const {lat , lon} = coordinates;
+    
+    //make grant invisible 
+    grantContainer.classList.remove("active");
 
+    //make loader visible
+    loadingScreen.classList.add("active");
+
+    try{
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}`);
+        const data = response.json();
+        loadingScreen.classList.remove("active");
+        outputInfo.classList.add("active");
+
+        renderInfo(data);
+    }
+    catch(error){
+        console.log("error" , error);
+    }
+}
+
+
+function renderInfo(data){
+    const city = document.querySelector("#city-name");
+    const flag = document.querySelector("#flag");
+    const status = document.querySelector(".weather-status");
+    const weatherIcon = document.querySelector('[weather-img]');
+    const temp = document.querySelector("[temp-output]");
+    const clouds = document.querySelector("[clouds-output]");
+    const humidity = document.querySelector("[humidity-output]");
+    const wind = document.querySelector("[wind-output]");
+    temp.innerHTML  = `${(data?.main?.temp/10).toFixed(2)}`;
+    clouds.innerHTML  = `${data?.clouds?.all}`;
+    humidity.innerHTML  = `${data?.main?.humidity}`;
+    wind.innerHTML  = `${data?.wind?.speed}`;
+    city.innerHTML  = `${data?.name}`;
+    flag.src  = `https://flagcdn.com/144x108/${data?.sys?.country.toLowercase()}.png`;
+    status.innerHTML  = `${data?.weather?.description}`;
+    weatherIcon.src  = `https://openweathermap.org/img/w/${data?.weather?.(0)?.icon}.png`;
 }
