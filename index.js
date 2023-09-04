@@ -101,7 +101,7 @@ async function fetchWeather(coordinates){
     loadingScreen.classList.add("active");
 
     try{
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}`);
+        const response = await fetch(`://ahttpspi.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}`);
         const data = response.json();
         loadingScreen.classList.remove("active");
         outputInfo.classList.add("active");
@@ -129,6 +129,44 @@ function renderInfo(data){
     wind.innerHTML  = `${data?.wind?.speed}`;
     city.innerHTML  = `${data?.name}`;
     flag.src  = `https://flagcdn.com/144x108/${data?.sys?.country.toLowercase()}.png`;
-    status.innerHTML  = `${data?.weather?.description}`;
-    weatherIcon.src  = `https://openweathermap.org/img/w/${data?.weather?.(0)?.icon}.png`;
+    status.innerHTML  = `${data?.weather?.[0]?.description}`;
+    weatherIcon.src  = `https://openweathermap.org/img/wn/${data?.weather?.[0]?.icon.}png`;
+    // temp.innerHTML =   `${((data?.main?.temp)/10).toFixed(2)}`
+    // wind.innerHTML =   ``
+}
+
+function getLocation() {
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(showPosition)
+    }
+    else{
+        alert("no geolocation support available");
+    }
+}
+
+function showPosition(position) {
+    const userCoordinates = {
+        lat: position.coords.latitude,
+        lon: position.coords.longitude
+    }
+
+    sessionStorage.setItem("coordinates",JSON.stringify(userCoordinates))
+}
+
+const grantAccess = document.querySelector("[grant-data-access]");
+grantAccess.addEventListener("click", getLocation)
+
+const inputData = document.querySelector("[data-input]");
+
+searchForm.addEventListener("submit", (e)=> {
+    e.preventDefault();
+    let city_name = searchForm.ariaValueMax;
+
+    if(city_name==="")
+        return;
+    else{fetchSearchWeather(city_name)}
+} )
+
+async function fetchSearchWeather (city_name) {
+    
 }
