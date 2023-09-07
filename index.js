@@ -123,6 +123,8 @@ function renderInfo(data){
     const clouds = document.querySelector("[clouds-output]");
     const humidity = document.querySelector("[humidity-output]");
     const wind = document.querySelector("[wind-output]");
+
+    
     temp.innerHTML  = `${(data?.main?.temp/10).toFixed(2)}`;
     clouds.innerHTML  = `${data?.clouds?.all}`;
     humidity.innerHTML  = `${data?.main?.humidity}`;
