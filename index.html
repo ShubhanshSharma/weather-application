@@ -4,20 +4,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
     <link rel="stylesheet" href="style.css">
+    <!-- <link href="/dist/output.css" rel="stylesheet"> -->
 </head>
 <body>
     <section class="wrapper">
-        <h1>Weather</h1>
+        <h1 class="header">Weather App</h1>
 
         <div class="tabs">
-            <p class="tab" user-tab>Current weather</p>
-            <p class="tab" search-tab>Search Weather</p>
+            <button class="tab " user-tab>Current weather</button>
+            <button class="tab" search-tab>Search Weather</button>
         </div>
 
 
         <!--common container-->
         <div class="infocontainer">
-            <!--grant location-->
+            <!--1) grant location-->
             <div class="grant-container">
                 <img src="./images/location.png" width="80" loading="lazy" alt="" >
 
@@ -31,9 +32,9 @@
 
             <!--search-->
             <form action="" class="form-container" data-search>
-                <input type="text" placeholder="Search for City...." data-input>
-                <button>
-                    <img src="./images/search.png" alt="search">
+                <input class="input" type="text" placeholder="Search for City...." data-input>
+                <button class="search">
+                    <img height="25px" src="./images/search.png" alt="search">
                 </button>
 
             </form>
@@ -48,33 +49,33 @@
             <div class="display-output" display-output>
                 <div class="name">
                     <p id="city-name"></p>
-                    <img src="" id="flag" alt="">
+                    <img src="" id="flag" height="35px" alt="flag">
                 </div>
     
                 <p class="weather-status"></p>
     
-                <img weather-img>
+                <img weather-img alt="weather image" src="" height="35px">
     
                 <p temp-output></p>
     
                 <div class="parameter-container" >
                     <!--card1-->
                     <div class="parameter">
-                        <img src="./images/wind.png" alt="windy">
+                        <img  width="80px" src="./images/wind.png" alt="windy">
                         <p>windspeed</p>
                         <p wind-output></p>
                     </div>
     
                     <!--card2-->
                     <div class="parameter">
-                        <img src="./images/humidity.png" alt="humidity">
+                        <img width="80px" src="./images/humidity.png" alt="humidity">
                         <p>Humidity</p>
                         <p humidity-output></p>
                     </div>
     
                     <!--card3-->
                     <div class="parameter">
-                        <img src="./images/cloud.png" alt="cloud">
+                        <img  width="80px" src="./images/cloud.png" alt="cloud">
                         <p>Clouds</p>
                         <p clouds-output></p>
                     </div>
