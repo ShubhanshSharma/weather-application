@@ -36,59 +36,96 @@
 
 const userTab = document.querySelector("[user-tab]");
 const searchTab = document.querySelector("[search-tab]");
+let Tab = userTab;
 const grantContainer = document.querySelector(".grant-container");
 const searchForm = document.querySelector("[data-search]");
 const loadingScreen = document.querySelector(".loading");
 const outputInfo = document.querySelector("[display-output]");
-let currentTab = userTab;
+const grantAccess = document.querySelector("[grant-data-access]");
 const API_key = "8214cae20a86d1c6e5ab0d1d45570f9d";
-currentTab.classList.add("current");
-getfromSessionStorage();
-loadingScreen.classList.add("active");
+const inputData = document.querySelector("[data-input]");
+loadingScreen.style.display="none";
+searchForm.style.display="none";
+outputInfo.style.display="none";
 
-function switchh(newTab){
-    if(newTab!= currentTab){
-        currentTab.classList.remove("current");
-        currentTab = newTab;
-        currentTab.classList.add("current");
 
-        if(!searchForm.classList.contains("active")){
-            grantContainer.classList.remove("active");
-            outputInfo.classList.remove("active");
-            //searchForm.classList.add("active");
-        }
+function switchh(Tab){
+    if(Tab!= userTab){
+        searchForm.style.display="flex";
+        grantContainer.style.display="none";
+        outputInfo.style.display="none";
+        Tab = searchTab;
+        getfromSessionStorage();
 
-        //your weather
-        else{
-            //make your weather visible
-            searchForm.classList.remove("active");
-            outputInfo.classList.add("active");
-            getfromSessionStorage();
-        }
+    }
+
+    //your weather
+    else{
+        //make your weather visible
+        searchForm.style.display="none";
+        grantContainer.style.display="flex";
+        getfromSessionStorage();
     }
 
 }
 
-userTab.addEventListener("click", () => {
+userTab.addEventListener("click", (e) => {
     switchh(userTab);
 })
 
-searchTab.addEventListener("click", () => {
+searchTab.addEventListener("click", (e) => {
     switchh(searchTab);
 })
 
+grantAccess.addEventListener("click", (e) => {
+    getLocation();
+} )
+
+function getLocation() {
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(showPosition);
+        
+    }
+    else{
+        alert("no geolocation support available");
+    }
+}
+
+function showPosition(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const userCoordinates = [lat, lon];
+    if (userCoordinates) {
+        console.log('coords found' , userCoordinates);
+        outputInfo.style.display = "flex";
+        grantContainer.style.display = "none";
+    }
+
+    sessionStorage.setItem("coordinates",JSON.stringify(userCoordinates));
+}
+
+searchForm.addEventListener("submit", (e)=> {
+    e.preventDefault();
+    let city_name = searchForm.ariaValueMax;
+
+    if(city_name==="")
+        return;
+    else{fetchSearchWeather(city_name);}
+} )
 
 //check for the coordintes
 function getfromSessionStorage(){
     const localCordinates = sessionStorage.getItem("coordinates");
+    console.log('local coordinates found' , localCordinates);
 
     //if coordinates not present
     if(!localCordinates){
-        grantContainer.classList.add("active");
+        switchh(userTab);        
     }
 
     else{
         const coordinates = JSON.parse(localCordinates);
+        console.log(coordinates);
         fetchWeather(coordinates);
     }
 }
@@ -96,13 +133,9 @@ function getfromSessionStorage(){
 
 
 async function fetchWeather(coordinates){
-    const {lat , lon} = coordinates;
-    
-    //make grant invisible 
-    grantContainer.classList.remove("active");
 
     //make loader visible
-    loadingScreen.classList.add("active");
+    loadingScreen.style.display = "flex";
 
     try{
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}`);
@@ -140,40 +173,6 @@ function renderInfo(data){
     // wind.innerHTML =   ``
 }
 
-function getLocation() {
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(showPosition);
-    }
-    else{
-        alert("no geolocation support available");
-    }
-}
-
-function showPosition(position) {
-    const userCoordinates = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-    }
-    if(latitude){
-        console.log("coords");
-    }
-
-    sessionStorage.setItem("coordinates",JSON.stringify(userCoordinates));
-}
-
-const grantAccess = document.querySelector("[grant-data-access]");
-grantAccess.addEventListener("click", getLocation);
-
-const inputData = document.querySelector("[data-input]");
-
-searchForm.addEventListener("submit", (e)=> {
-    e.preventDefault();
-    let city_name = searchForm.ariaValueMax;
-
-    if(city_name==="")
-        return;
-    else{fetchSearchWeather(city_name);}
-} )
 
 async function fetchSearchWeather (city_name) {
     loadingScreen.classList.add("active");
