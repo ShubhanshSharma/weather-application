@@ -64,7 +64,7 @@ function switchh(Tab){
         //make your weather visible
         searchForm.style.display="none";
         grantContainer.style.display="flex";
-        getfromSessionStorage();
+        // getfromSessionStorage();
     }
 
 }
@@ -79,6 +79,7 @@ searchTab.addEventListener("click", (e) => {
 
 grantAccess.addEventListener("click", (e) => {
     getLocation();
+    getfromSessionStorage();
 } )
 
 function getLocation() {
@@ -94,7 +95,10 @@ function getLocation() {
 function showPosition(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    const userCoordinates = [lat, lon];
+    const userCoordinates = {
+        lat,
+        lon
+    }
     if (userCoordinates) {
         console.log('coords found' , userCoordinates);
         outputInfo.style.display = "flex";
@@ -102,6 +106,23 @@ function showPosition(position) {
     }
 
     sessionStorage.setItem("coordinates",JSON.stringify(userCoordinates));
+}
+
+//check for the coordintes
+function getfromSessionStorage(){
+    const localCoordinates = sessionStorage.getItem('coordinates');
+    console.log('got local coordinates from sessionstorage',localCoordinates);
+
+    //if coordinates not present
+    if(!localCoordinates){
+        switchh(userTab);        
+    }
+
+    else{
+        const coordinates = JSON.parse(localCoordinates);
+        console.log('coordinates',coordinates);
+        fetchWeather(coordinates);
+    }
 }
 
 searchForm.addEventListener("submit", (e)=> {
@@ -113,24 +134,6 @@ searchForm.addEventListener("submit", (e)=> {
     else{fetchSearchWeather(city_name);}
 } )
 
-//check for the coordintes
-function getfromSessionStorage(){
-    const localCordinates = sessionStorage.getItem("coordinates");
-    console.log('local coordinates found' , localCordinates);
-
-    //if coordinates not present
-    if(!localCordinates){
-        switchh(userTab);        
-    }
-
-    else{
-        const coordinates = JSON.parse(localCordinates);
-        console.log(coordinates);
-        fetchWeather(coordinates);
-    }
-}
-
-
 
 async function fetchWeather(coordinates){
 
@@ -138,9 +141,9 @@ async function fetchWeather(coordinates){
     loadingScreen.style.display = "flex";
 
     try{
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}`);
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${API_key}`);
         const data = response.json();
-        loadingScreen.classList.remove("active");
+        loadingScreen.style.display = "none";
         outputInfo.classList.add("active");
 
         renderInfo(data);
@@ -151,6 +154,7 @@ async function fetchWeather(coordinates){
 }
 
 function renderInfo(data){
+    console.log(data);
     const city = document.querySelector("#city-name");
     const flag = document.querySelector("#flag");
     const status = document.querySelector(".weather-status");
@@ -166,6 +170,7 @@ function renderInfo(data){
     humidity.innerHTML  = `${data?.main?.humidity}`;
     wind.innerHTML  = `${data?.wind?.speed}`;
     city.innerHTML  = `${data?.name}`;
+    console.log(data.sys.country);
     flag.src  = `https://flagcdn.com/144x108/${(data?.sys?.country).toLowercase()}.png`;
     status.innerHTML  = `${data?.weather?.[0]?.description}`;
     weatherIcon.src  = `https://openweathermap.org/img/wn/${data?.weather?.[0]?.icon}png`;
