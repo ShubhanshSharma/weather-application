@@ -47,6 +47,7 @@ const inputData = document.querySelector("[data-input]");
 loadingScreen.style.display="none";
 searchForm.style.display="none";
 outputInfo.style.display="none";
+console.log(`items in session storage ${sessionStorage?.length}`);
 
 
 function switchh(Tab){
@@ -55,15 +56,18 @@ function switchh(Tab){
         grantContainer.style.display="none";
         outputInfo.style.display="none";
         Tab = searchTab;
-        getfromSessionStorage();
-
     }
 
     //your weather
     else{
         //make your weather visible
         searchForm.style.display="none";
+        if(sessionStorage?.length===0){
         grantContainer.style.display="flex";
+        }
+        else {
+            outputInfo.style.display="flex";
+        }
         // getfromSessionStorage();
     }
 
@@ -79,13 +83,11 @@ searchTab.addEventListener("click", (e) => {
 
 grantAccess.addEventListener("click", (e) => {
     getLocation();
-    getfromSessionStorage();
 } )
 
 function getLocation() {
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(showPosition);
-        
     }
     else{
         alert("no geolocation support available");
@@ -104,8 +106,9 @@ function showPosition(position) {
         outputInfo.style.display = "flex";
         grantContainer.style.display = "none";
     }
-
     sessionStorage.setItem("coordinates",JSON.stringify(userCoordinates));
+    console.log(`items in session storage ${sessionStorage?.length}`);
+    getfromSessionStorage();
 }
 
 //check for the coordintes
@@ -122,6 +125,7 @@ function getfromSessionStorage(){
         const coordinates = JSON.parse(localCoordinates);
         console.log('coordinates',coordinates);
         fetchWeather(coordinates);
+        console.log('till here');
     }
 }
 
@@ -135,14 +139,15 @@ searchForm.addEventListener("submit", (e)=> {
 } )
 
 
-async function fetchWeather(coordinates){
+async function fetchWeather(coords){
 
     //make loader visible
     loadingScreen.style.display = "flex";
+    console.log(coords?.lat);
 
     try{
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${API_key}`);
-        const data = response.json();
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${API_key}`);
+        const data = await response.json();
         loadingScreen.style.display = "none";
         outputInfo.classList.add("active");
 
@@ -153,8 +158,8 @@ async function fetchWeather(coordinates){
     }
 }
 
-function renderInfo(data){
-    console.log(data);
+function renderInfo(dt){
+    console.log(dt);
     const city = document.querySelector("#city-name");
     const flag = document.querySelector("#flag");
     const status = document.querySelector(".weather-status");
@@ -165,15 +170,15 @@ function renderInfo(data){
     const wind = document.querySelector("[wind-output]");
 
     
-    temp.innerHTML  = `${(data?.main?.temp/10).toFixed(2)}`;
-    clouds.innerHTML  = `${data?.clouds?.all}`;
-    humidity.innerHTML  = `${data?.main?.humidity}`;
-    wind.innerHTML  = `${data?.wind?.speed}`;
-    city.innerHTML  = `${data?.name}`;
-    console.log(data.sys.country);
-    flag.src  = `https://flagcdn.com/144x108/${(data?.sys?.country).toLowercase()}.png`;
-    status.innerHTML  = `${data?.weather?.[0]?.description}`;
-    weatherIcon.src  = `https://openweathermap.org/img/wn/${data?.weather?.[0]?.icon}png`;
+    temp.innerHTML  = (dt?.main?.temp/10).toFixed(2);
+    clouds.innerHTML  = `${dt?.clouds?.all} %`;
+    humidity.innerHTML  = `${dt?.main?.humidity} %`;
+    wind.innerHTML  = `${dt?.wind?.speed} m/s` ;
+    city.innerHTML  = dt?.name;
+    flag.alt = dt?.sys?.country.toLowerCase();
+    flag.src  = `https://flagcdn.com/144x108/${dt?.sys?.country.toLowerCase()}.png`;
+    status.innerHTML  = dt?.weather?.[0]?.description;
+    weatherIcon.src  = `https://openweathermap.org/img/wn/${dt?.weather?.[0]?.icon}.png`;
     // temp.innerHTML =   `${((data?.main?.temp)/10).toFixed(2)}`
     // wind.innerHTML =   ``
 }
