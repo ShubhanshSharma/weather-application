@@ -66,7 +66,8 @@ function switchh(Tab){
         grantContainer.style.display="flex";
         }
         else {
-            outputInfo.style.display="flex";
+            grantContainer.style.display="none";
+            getfromSessionStorage();
         }
         // getfromSessionStorage();
     }
@@ -103,7 +104,6 @@ function showPosition(position) {
     }
     if (userCoordinates) {
         console.log('coords found' , userCoordinates);
-        outputInfo.style.display = "flex";
         grantContainer.style.display = "none";
     }
     sessionStorage.setItem("coordinates",JSON.stringify(userCoordinates));
@@ -125,6 +125,7 @@ function getfromSessionStorage(){
         const coordinates = JSON.parse(localCoordinates);
         console.log('coordinates',coordinates);
         fetchWeather(coordinates);
+        outputInfo.style.display = "flex";
         console.log('till here');
     }
 }
@@ -159,7 +160,6 @@ async function fetchWeather(coords){
 }
 
 function renderInfo(dt){
-    console.log(dt);
     const city = document.querySelector("#city-name");
     const flag = document.querySelector("#flag");
     const status = document.querySelector(".weather-status");
