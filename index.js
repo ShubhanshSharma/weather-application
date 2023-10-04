@@ -39,11 +39,12 @@ const searchTab = document.querySelector("[search-tab]");
 let Tab = userTab;
 const grantContainer = document.querySelector(".grant-container");
 const searchForm = document.querySelector("[data-search]");
+const inputData = document.querySelector("[data-input]");
+const searchButton = document.querySelector(".search");
 const loadingScreen = document.querySelector(".loading");
 const outputInfo = document.querySelector("[display-output]");
 const grantAccess = document.querySelector("[grant-data-access]");
 const API_key = "8214cae20a86d1c6e5ab0d1d45570f9d";
-const inputData = document.querySelector("[data-input]");
 loadingScreen.style.display="none";
 searchForm.style.display="none";
 outputInfo.style.display="none";
@@ -125,17 +126,17 @@ function getfromSessionStorage(){
         const coordinates = JSON.parse(localCoordinates);
         console.log('coordinates',coordinates);
         fetchWeather(coordinates);
-        outputInfo.style.display = "flex";
+        // outputInfo.style.display = "flex";
         console.log('till here');
     }
 }
 
-searchForm.addEventListener("submit", (e)=> {
-    e.preventDefault();
-    let city_name = searchForm.ariaValueMax;
+searchButton.addEventListener("click", (e)=> {
+    let city_name = inputData.value;
+    console.log(`city value: ${city_name}`);
 
     if(city_name==="")
-        return;
+        {return;}
     else{fetchSearchWeather(city_name);}
 } )
 
@@ -150,14 +151,31 @@ async function fetchWeather(coords){
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${API_key}`);
         const data = await response.json();
         loadingScreen.style.display = "none";
-        outputInfo.classList.add("active");
-
         renderInfo(data);
+        outputInfo.style.display = "flex";
     }
     catch(error){
         console.log("error" , error);
     }
 }
+
+async function fetchSearchWeather (city_name) {
+    loadingScreen.style.display = "flex";
+
+    try{
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${API_key}`);
+        const data = await response.json();
+        console.log(data);
+        loadingScreen.style.display = "none";
+        renderInfo(data);
+        outputInfo.style.display = "flex";
+    }
+    catch(error){
+        console.log('error:' + error);
+        alert("couldn't fetch the data");
+    }
+}
+
 
 function renderInfo(dt){
     const city = document.querySelector("#city-name");
@@ -170,7 +188,7 @@ function renderInfo(dt){
     const wind = document.querySelector("[wind-output]");
 
     
-    temp.innerHTML  = (dt?.main?.temp/10).toFixed(2);
+    temp.innerHTML  = `${(dt?.main?.temp/10).toFixed(2)} deg`;
     clouds.innerHTML  = `${dt?.clouds?.all} %`;
     humidity.innerHTML  = `${dt?.main?.humidity} %`;
     wind.innerHTML  = `${dt?.wind?.speed} m/s` ;
@@ -181,23 +199,4 @@ function renderInfo(dt){
     weatherIcon.src  = `https://openweathermap.org/img/wn/${dt?.weather?.[0]?.icon}.png`;
     // temp.innerHTML =   `${((data?.main?.temp)/10).toFixed(2)}`
     // wind.innerHTML =   ``
-}
-
-
-async function fetchSearchWeather (city_name) {
-    loadingScreen.classList.add("active");
-    userTab.classList.remove("active");
-    grantContainer.classList.remove("active");
-
-    try{
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}`);
-        const data = response.json();
-        loadingScreen.classList.remove("active");
-        userTab.classList.add("active");
-        renderInfo(data);
-    }
-    catch(err){
-        console.log('error' + err);
-        alert("couldn't fetch the data");
-    }
 }
