@@ -132,12 +132,13 @@ function getfromSessionStorage(){
 }
 
 searchButton.addEventListener("click", (e)=> {
+    e.preventDefault();
     let city_name = inputData.value;
     console.log(`city value: ${city_name}`);
 
     if(city_name==="")
-        {return;}
-    else{fetchSearchWeather(city_name);}
+        return;
+    else fetchSearchWeather(city_name);
 } )
 
 
@@ -150,22 +151,25 @@ async function fetchWeather(coords){
     try{
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${API_key}`);
         const data = await response.json();
+        console.log('yep');
         loadingScreen.style.display = "none";
         renderInfo(data);
         outputInfo.style.display = "flex";
     }
     catch(error){
         console.log("error" , error);
+        console.log('nope');
     }
 }
 
-async function fetchSearchWeather (city_name) {
+async function fetchSearchWeather(city_name) {
     loadingScreen.style.display = "flex";
-
+    console.log(city_name);
     try{
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${API_key}`);
         const data = await response.json();
         console.log(data);
+        searchForm.style.display = "none";
         loadingScreen.style.display = "none";
         renderInfo(data);
         outputInfo.style.display = "flex";
@@ -175,6 +179,18 @@ async function fetchSearchWeather (city_name) {
         alert("couldn't fetch the data");
     }
 }
+// async function fetchCoordinates(name) {
+//     try{
+//         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${name}&appid=${API_key}`);
+//         const dt = await response.json();
+//         console.log(dt);
+
+//     }
+//     catch(err) {
+//         console.log(err);
+//         console.log('nope');
+//     }
+// }
 
 
 function renderInfo(dt){
