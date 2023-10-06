@@ -53,6 +53,8 @@ console.log(`items in session storage ${sessionStorage?.length}`);
 
 function switchh(Tab){
     if(Tab!= userTab){
+        userTab.style.background = "none";
+        searchTab.style.background = "rgba(255, 255, 255, 0.441)";
         searchForm.style.display="flex";
         grantContainer.style.display="none";
         outputInfo.style.display="none";
@@ -62,11 +64,15 @@ function switchh(Tab){
     //your weather
     else{
         //make your weather visible
+        searchTab.style.background = "none";
+        userTab.style.background = "rgba(255, 255, 255, 0.441)";
         searchForm.style.display="none";
         if(sessionStorage?.length===0){
-        grantContainer.style.display="flex";
+            outputInfo.style.display = "none";
+            grantContainer.style.display="flex";
         }
         else {
+
             grantContainer.style.display="none";
             getfromSessionStorage();
         }

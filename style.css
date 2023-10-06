@@ -26,7 +26,26 @@ h1{
     font-size: medium;
 }
 
-.tab,.btn{
+.tab1{
+    background: rgba(255, 255, 255, 0.441);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    word-wrap: break-word;
+    padding: 4px 7px;
+}
+
+.tab2{
+    /* background: rgba(255, 255, 255, 0.441); */
+    background: none;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    word-wrap: break-word;
+    padding: 4px 7px;
+}
+
+.btn{
     background: rgba(255, 255, 255, 0.441);
     border: none;
     border-radius: 10px;
